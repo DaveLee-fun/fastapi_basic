@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이 메모 앱</title>
+    <style>
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background-color: #f8f9fa; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px; 
+            padding: 2rem;
+            background-color: #fff; 
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 1rem;
+            width: 100%;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-bottom: 2rem;
+        }
+        p {
+            margin-bottom: 2rem;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+        .form-group label {
+            margin-bottom: .5rem;
+            color: #888;
+            text-align: left;
+            display: block;
+        }
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+        .buttons button {
+            width: 100%; /* Adjusting button width based on padding */
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        function submitLoginForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json().then(body => ({ status: response.status, body: body })))
+            .then(result => {
+                if (result.status === 200) {
+                    alert(result.body.message); // 성공 메시지 표시
+                    window.location.href = '/memos'; // 성공 시 리다이렉트
+                } else {
+                    throw new Error(result.body.detail || '로그인을 실패했습니다.'); // 서버가 제공하는 에러 메시지 또는 기본 메시지
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert(error.message); // 에러 메시지 표시
+            });
+        }
+        function submitSignupForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json().then(body => ({ status: response.status, body: body })))
+            .then(result => {
+                if (result.status === 200) {
+                    alert(result.body.message); // 회원가입 성공 메시지 표시
+                    window.location.href = '/'; // 성공 시 리다이렉트
+                } else {
+                    throw new Error(result.body.detail || '회원가입을 실패했습니다.'); // 서버가 제공하는 에러 메시지 또는 기본 메시지
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert(error.message); // 에러 메시지 표시
+            });
+        }        
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>마이 메모 앱에 오신 것을 환영합니다!</h1>
+        <p>간단한 메모를 작성하고 관리할 수 있는 앱입니다.</p>
+
+        <form id="loginForm" onsubmit="submitLoginForm(event)">
+            <div class="form-group">
+                <label for="username">사용자 이름:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="buttons">
+                <button type="submit">로그인</button>
+            </div>
+        </form>
+        <br><br>
+        <form id="signupForm" onsubmit="submitSignupForm(event)">
+            <div class="form-group">
+                <label for="signup_username">사용자 이름:</label>
+                <input type="text" id="signup_username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="signup_email">이메일:</label>
+                <input type="email" id="signup_email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup_password">비밀번호:</label>
+                <input type="password" id="signup_password" name="password" required>
+            </div>
+            <div class="buttons">
+                <button type="submit">회원가입</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

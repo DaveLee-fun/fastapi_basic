@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이 메모 앱</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container {
+            width: 300px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label, .form-group input {
+            display: block;
+            width: 100%;
+        }
+        .form-group input {
+            padding: 5px;
+            margin-top: 5px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function submitLoginForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // 로그인 응답 메시지를 팝업으로 표시
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('로그인 에러: ' + error); // 에러 메시지를 팝업으로 표시
+            });
+        }
+
+        function submitSignupForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // 회원가입 응답 메시지를 팝업으로 표시
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('회원가입 에러: ' + error); // 에러 메시지를 팝업으로 표시
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>마이 메모 앱에 오신 것을 환영합니다!</h1>
+        <p>간단한 메모를 작성하고 관리할 수 있는 앱입니다.</p>
+
+        <form id="loginForm" onsubmit="submitLoginForm(event)">
+            <div class="form-group">
+                <label for="username">사용자 이름:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="buttons">
+                <button type="submit">로그인</button>
+            </div>
+        </form>
+
+        <form id="signupForm" onsubmit="submitSignupForm(event)">
+            <div class="form-group">
+                <label for="signup_username">사용자 이름:</label>
+                <input type="text" id="signup_username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="signup_email">이메일:</label>
+                <input type="email" id="signup_email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup_password">비밀번호:</label>
+                <input type="password" id="signup_password" name="password" required>
+            </div>
+            <div class="buttons">
+                <button type="submit">회원가입</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
